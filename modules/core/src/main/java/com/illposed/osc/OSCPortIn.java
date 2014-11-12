@@ -45,7 +45,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Buffers were 1500 bytes in size, but were
 	 * increased to 1536, as this is a common MTU.
 	 */
-	public static final int DEFAULT_BUFFER_SIZE = 1536;
+	private static final int DEFAULT_BUFFER_SIZE = 1536;
 	public static final int MAX_BUFFER_SIZE = 64 * 1024;
 	private final int bufferSize;
 
