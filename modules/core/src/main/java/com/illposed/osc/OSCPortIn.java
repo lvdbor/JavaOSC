@@ -45,7 +45,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Buffers were 1500 bytes in size, but were
 	 * increased to 1536, as this is a common MTU.
 	 */
-	private static final int BUFFER_SIZE = 1536;
+	public static final int DEFAULT_BUFFER_SIZE = 1536;
+	public static final int MAX_BUFFER_SIZE = 64 * 1024;
+	private final int bufferSize;
 
 	/** state for listening */
 	private boolean listening;
@@ -54,26 +56,78 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/**
 	 * Create an OSCPort that listens using a specified socket.
-	 * @param socket DatagramSocket to listen on.
+	 * 
+	 * @param socket
+	 *			DatagramSocket to listen on.
+	 * @param bufferSize
+	 *			The bufferSize to use.
 	 */
-	public OSCPortIn(DatagramSocket socket) {
+	public OSCPortIn(DatagramSocket socket, int bufferSize) {
 		super(socket, socket.getLocalPort());
 
 		this.converter = new OSCByteArrayToJavaConverter();
 		this.dispatcher = new OSCPacketDispatcher();
+		this.bufferSize = bufferSize;
 	}
 
 	/**
-	 * Create an OSCPort that listens on the specified port.
-	 * Strings will be decoded using the systems default character set.
+	 * Create an OSCPort that listens using a specified socket.
+	 * 
+	 * @param socket
+	 *			DatagramSocket to listen on.
+	 */
+	public OSCPortIn(DatagramSocket socket) {
+		this(socket, DEFAULT_BUFFER_SIZE);
+	}
+
+	/**
+	 * Create an OSCPort that listens on the specified port. Strings will be
+	 * decoded using the systems default character set.
+	 * 
+	 * @param port
+	 *			UDP port to listen on.
+	 * @param bufferSize
+	 *			The bufferSize to use.
+	 * @throws SocketException
+	 *			 if the port number is invalid, or there is already a socket
+	 *			 listening on it
+	 */
+	public OSCPortIn(int port, int bufferSize) throws SocketException {
+		this(new DatagramSocket(port), bufferSize);
+	}
+
+	/**
+	 * Create an OSCPort that listens on the specified port. Strings will be
+	 * decoded using the systems default character set.
+	 * 
+	 * @param port
+	 *			UDP port to listen on.
+	 * @throws SocketException
+	 *			 if the port number is invalid, or there is already a socket
+	 *			 listening on it
+	 */
+	public OSCPortIn(int port) throws SocketException {
+		this(port, DEFAULT_BUFFER_SIZE);
+	}
+	
+	
+	/**
+	 * Create an OSCPort that listens on the specified port,
+	 * and decodes strings with a specific character set.
 	 * @param port UDP port to listen on.
+	 * @param charset how to decode strings read from incoming packages.
+	 *   This includes message addresses and string parameters.
+	 * @param bufferSize
+	 *			The bufferSize to use.	 
 	 * @throws SocketException if the port number is invalid,
 	 *   or there is already a socket listening on it
 	 */
-	public OSCPortIn(int port) throws SocketException {
-		this(new DatagramSocket(port));
-	}
+	public OSCPortIn(int port, Charset charset, int bufferSize) throws SocketException {
+		this(port, bufferSize);
 
+		this.converter.setCharset(charset);
+	}
+	
 	/**
 	 * Create an OSCPort that listens on the specified port,
 	 * and decodes strings with a specific character set.
@@ -84,9 +138,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 *   or there is already a socket listening on it
 	 */
 	public OSCPortIn(int port, Charset charset) throws SocketException {
-		this(port);
-
-		this.converter.setCharset(charset);
+		this(port, charset, DEFAULT_BUFFER_SIZE);
 	}
 
 	/**
@@ -96,8 +148,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	@Override
 	public void run() {
-		final byte[] buffer = new byte[BUFFER_SIZE];
-		final DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
+		final byte[] buffer = new byte[getBufferSize()];
+		final DatagramPacket packet = new DatagramPacket(buffer, getBufferSize());
 		final DatagramSocket socket = getSocket();
 		while (listening) {
 			try {
@@ -168,5 +220,14 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public void addListener(AddressSelector addressSelector, OSCListener listener) {
 		dispatcher.addListener(addressSelector, listener);
+	}
+	
+	/**
+	 * Get buffer size
+	 * 
+	 * @return return the buffer size
+	 */
+	int getBufferSize() {
+		return bufferSize;
 	}
 }
