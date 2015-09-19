@@ -10,13 +10,13 @@
 	<parent>
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
-		<version>0.4-SNAPSHOT</version>
+		<version>0.4-LITEL</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-ui</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4-LITEL</version>
 
 	<packaging>jar</packaging>
 

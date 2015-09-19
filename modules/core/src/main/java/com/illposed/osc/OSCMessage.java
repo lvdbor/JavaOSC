@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,32 +15,31 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+
 /**
  * An simple (non-bundle) OSC message.
  *
- * An OSC <i>Message</i> is made up of
- * an <i>Address Pattern</i> (the receiver of the message)
- * and <i>Arguments</i> (the content of the message).
+ * An OSC <i>Message</i> is made up of an <i>Address Pattern</i> (the receiver
+ * of the message) and <i>Arguments</i> (the content of the message).
  *
  * @author Chandrasekhar Ramakrishnan
  */
 public class OSCMessage extends AbstractOSCPacket {
 
 	/**
-	 * Java regular expression pattern matching a single invalid character.
-	 * The invalid characters are:
-	 * ' ', '#', '*', ',', '?', '[', ']', '{', '}'
+	 * Java regular expression pattern matching a single invalid character. The
+	 * invalid characters are: ' ', '#', '*', ',', '?', '[', ']', '{', '}'
 	 */
-	private static final Pattern ILLEGAL_ADDRESS_CHAR
-			= Pattern.compile("[ \\#\\*\\,\\?\\[\\]\\{\\}]");
+	private static final Pattern ILLEGAL_ADDRESS_CHAR = Pattern
+			.compile("[ \\#\\*\\,\\?\\[\\]\\{\\}]");
 
 	private String address;
 	private List<Object> arguments;
 
 	/**
-	 * Creates an empty OSC Message.
-	 * In order to send this OSC message,
-	 * you need to set the address and optionally some arguments.
+	 * Creates an empty OSC Message. In order to send this OSC message, you need
+	 * to set the address and optionally some arguments.
 	 */
 	public OSCMessage() {
 		this(null);
@@ -49,17 +47,21 @@ public class OSCMessage extends AbstractOSCPacket {
 
 	/**
 	 * Creates an OSCMessage with an address already initialized.
-	 * @param address  the recipient of this OSC message
+	 *
+	 * @param address
+	 *            the recipient of this OSC message
 	 */
 	public OSCMessage(String address) {
 		this(address, null);
 	}
 
 	/**
-	 * Creates an OSCMessage with an address
-	 * and arguments already initialized.
-	 * @param address  the recipient of this OSC message
-	 * @param arguments  the data sent to the receiver
+	 * Creates an OSCMessage with an address and arguments already initialized.
+	 *
+	 * @param address
+	 *            the recipient of this OSC message
+	 * @param arguments
+	 *            the data sent to the receiver
 	 */
 	public OSCMessage(String address, Collection<Object> arguments) {
 
@@ -74,6 +76,7 @@ public class OSCMessage extends AbstractOSCPacket {
 
 	/**
 	 * The receiver of this message.
+	 *
 	 * @return the receiver of this OSC Message
 	 */
 	public String getAddress() {
@@ -82,7 +85,9 @@ public class OSCMessage extends AbstractOSCPacket {
 
 	/**
 	 * Set the address of this message.
-	 * @param address the receiver of the message
+	 *
+	 * @param address
+	 *            the receiver of the message
 	 */
 	public void setAddress(String address) {
 		checkAddress(address);
@@ -92,8 +97,10 @@ public class OSCMessage extends AbstractOSCPacket {
 
 	/**
 	 * Add an argument to the list of arguments.
-	 * @param argument a Float, Double, String, Character, Integer, Long, Boolean, null
-	 *   or an array of these
+	 *
+	 * @param argument
+	 *            a Float, Double, String, Character, Integer, Long, Boolean,
+	 *            null or an array of these
 	 */
 	public void addArgument(Object argument) {
 		arguments.add(argument);
@@ -102,6 +109,7 @@ public class OSCMessage extends AbstractOSCPacket {
 
 	/**
 	 * The arguments of this message.
+	 *
 	 * @return the arguments to this message
 	 */
 	public List<Object> getArguments() {
@@ -109,18 +117,20 @@ public class OSCMessage extends AbstractOSCPacket {
 	}
 
 	/**
-	 * Convert the address into a byte array.
-	 * Used internally only.
-	 * @param stream where to write the address to
+	 * Convert the address into a byte array. Used internally only.
+	 *
+	 * @param stream
+	 *            where to write the address to
 	 */
 	private void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(address);
 	}
 
 	/**
-	 * Convert the arguments into a byte array.
-	 * Used internally only.
-	 * @param stream where to write the arguments to
+	 * Convert the arguments into a byte array. Used internally only.
+	 *
+	 * @param stream
+	 *            where to write the arguments to
 	 */
 	private void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
@@ -138,29 +148,32 @@ public class OSCMessage extends AbstractOSCPacket {
 	}
 
 	/**
-	 * Throws an exception if the given address is invalid.
-	 * We explicitly allow <code>null</code> here,
-	 * because we want to allow to set the address in a lazy fashion.
-	 * @param address to be checked for validity
+	 * Throws an exception if the given address is invalid. We explicitly allow
+	 * <code>null</code> here, because we want to allow to set the address in a
+	 * lazy fashion.
+	 *
+	 * @param address
+	 *            to be checked for validity
 	 */
 	private static void checkAddress(String address) {
 		// NOTE We explicitly allow <code>null</code> here,
-		//   because we want to allow to set in a lazy fashion.
+		// because we want to allow to set in a lazy fashion.
 		if ((address != null) && !isValidAddress(address)) {
-			throw new IllegalArgumentException("Not a valid OSC address: " + address);
+			throw new IllegalArgumentException("Not a valid OSC address: "
+					+ address);
 		}
 	}
 
 	/**
 	 * Checks whether a given string is a valid OSC <i>Address Pattern</i>.
-	 * @param address to be checked for validity
+	 *
+	 * @param address
+	 *            to be checked for validity
 	 * @return true if the supplied string constitutes a valid OSC address
 	 */
 	public static boolean isValidAddress(String address) {
-		return (address != null)
-				&& !address.isEmpty()
-				&& address.charAt(0) == '/'
-				&& !address.contains("//")
+		return (address != null) && !address.isEmpty()
+				&& (address.charAt(0) == '/') && !address.contains("//")
 				&& !ILLEGAL_ADDRESS_CHAR.matcher(address).find();
 	}
 }

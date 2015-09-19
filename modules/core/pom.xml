@@ -9,13 +9,13 @@
 	<parent>
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
-		<version>0.4-SNAPSHOT</version>
+		<version>0.4-LITEL</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-core</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4-LITEL</version>
 
 	<packaging>bundle</packaging>
 
@@ -48,45 +48,6 @@
 						<Export-Package>${project.packageName}</Export-Package>
 					</instructions>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
