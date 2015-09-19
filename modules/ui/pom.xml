@@ -78,7 +78,7 @@
 		<dependency>
 			<groupId>com.illposed.osc</groupId>
 			<artifactId>javaosc-core</artifactId>
-			<version>0.4-SNAPSHOT</version>
+			<version>0.4-LITEL</version>
 		</dependency>
 	</dependencies>
 
